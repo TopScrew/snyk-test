@@ -1,1 +1,7 @@
-package snyk_test
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("master")
+}
