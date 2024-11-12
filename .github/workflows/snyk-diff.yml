@@ -3,7 +3,9 @@ name: Snyk Incremental Security Scan
 on:
   pull_request:
     branches:
-      - '*'  # Applies to all branches
+      - 'main'
+      - 'a1'
+      - 'releases-*'
 
 jobs:
   snyk-incremental-scan:
@@ -73,10 +75,21 @@ jobs:
           new_vulns=$(comm -13 <(echo "$baseline_ids") <(echo "$current_ids"))
 
           if [ -n "$new_vulns" ]; then
-            echo "New vulnerabilities introduced in this PR:"
+            echo "Your PR has introduced the following new vulnerabilities. Please ensure these vulnerabilities are fully addressed before the PR can be merged."
             for vuln_id in $new_vulns; do
-              # Extract detailed information for each new vulnerability
-              jq --arg id "$vuln_id" '.vulnerabilities[] | select(.id == $id) | "\(.title) (ID: \(.id), Severity: \(.severity))\nDescription: \(.description)\nIntroduced through: \(.from | join(", "))\nMore info: \(.url)\n"' current-report.json
+              # Extract detailed information for each new vulnerability including CVE ID
+              jq --arg id "$vuln_id" '.vulnerabilities[] | select(.id == $id) | {
+                Title: .title,
+                ID: .id,
+                Severity: .severity,
+                CVSS_Score: .cvssScore,
+                Vulnerable_Versions: .semver.vulnerable,
+                Fixed_In: .fixedIn,
+                CVE_IDs: .identifiers.CVE,
+                Description: (.description | split("\n") | .[2] | gsub("## Overview"; "") | gsub("## Remediation"; "\nRemediation")),
+                References: (.references[] | {Title: .title, URL: .url}),
+                CWE_IDs: .identifiers.CWE
+              }' current-report.json
             done
             exit 1  # Fail CI if new vulnerabilities are found
           else
