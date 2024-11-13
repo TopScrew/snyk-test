@@ -1,4 +1,4 @@
-name: Incremental License Analysis
+name: Snyk Incremental License Scan
 
 on:
   pull_request:

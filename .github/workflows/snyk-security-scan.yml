@@ -8,7 +8,7 @@ on:
       - 'releases-*'
 
 jobs:
-  snyk-vulnerability-scan:
+  incremental-vulnerability-scan:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
