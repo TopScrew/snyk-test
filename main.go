@@ -9,6 +9,7 @@ func main() {
 	fmt.Println("a12")
 
 	fmt.Println(nosurf.CookieName)
+
 	fmt.Println("fffffff")
 
 }
