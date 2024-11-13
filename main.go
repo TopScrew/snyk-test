@@ -9,7 +9,7 @@ import (
 
 func main() {
 	fmt.Println(nosurf.CookieName)
-	fmt.Println("aaaaaa")
+	fmt.Println("aaaaaa1")
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
