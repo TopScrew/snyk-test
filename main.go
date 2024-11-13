@@ -2,18 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"net/http"
+	"github.com/justinas/nosurf"
 )
 
 func main() {
 	fmt.Println("a12")
 
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run()
+	fmt.Println(nosurf.CookieName)
+	fmt.Println("fffffff")
+
 }
