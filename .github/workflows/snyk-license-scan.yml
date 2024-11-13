@@ -1,4 +1,4 @@
-name: Snyk Incremental Security Scan
+name: Snyk Incremental License Scan
 
 on:
   pull_request:
@@ -72,24 +72,27 @@ jobs:
           current_ids=$(jq -r '.vulnerabilities[].id' current-report.json | sort | uniq)
 
           # Find IDs present in current but not in baseline report
-          new_vulns=$(comm -13 <(echo "$baseline_ids") <(echo "$current_ids"))
+          new_vulns=$(comm -13 <(echo "$baseline_ids") <(echo "$current_ids") | grep '^snyk:lic')
 
           if [ -n "$new_vulns" ]; then
             echo "Your PR has introduced the following new vulnerabilities. Please ensure these vulnerabilities are fully addressed before the PR can be merged."
             for vuln_id in $new_vulns; do
-              # Extract detailed information for each new vulnerability including CVE ID
+              # Extract detailed information for each new vulnerability in the desired format
               jq --arg id "$vuln_id" '.vulnerabilities[] | select(.id == $id) | {
-                Title: .title,
-                ID: .id,
-                Severity: .severity,
-                CVSS_Score: .cvssScore,
-                Vulnerable_Versions: .semver.vulnerable,
-                Fixed_In: .fixedIn,
-                CVE_IDs: .identifiers.CVE,
-                Component_Name: .packageName,
-                Current_Version: .version,
-                References: (.references[] | {Title: .title, URL: .url}),
-                Introduced_Through: (.from | join(" > "))
+                id: .id,
+                type: .type,
+                license: .license,
+                language: .language,
+                description: .description,
+                packageName: .packageName,
+                creationTime: .creationTime,
+                packageManager: .packageManager,
+                publicationTime: .publicationTime,
+                severity: .severity,
+                from: .from,
+                upgradePath: .upgradePath,
+                version: .version,
+                semver: .semver
               }' current-report.json
             done
             exit 1  # Fail CI if new vulnerabilities are found

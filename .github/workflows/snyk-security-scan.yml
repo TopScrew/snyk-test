@@ -1,0 +1,98 @@
+name: Snyk Incremental Security Scan
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+      - 'a1'
+      - 'releases-*'
+
+jobs:
+  snyk-incremental-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout base branch
+      - name: Checkout base branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}  # Get the commit of the base branch
+          fetch-depth: 1  # Fetch only the latest commit of the base branch
+
+      # Step 2: Set up Go environment
+      - name: Setup Go environment
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      # Step 3: Install Snyk CLI
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
+
+      # Step 4: Authenticate Snyk
+      - name: Snyk Auth
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      # Step 5: Install dependencies on base branch
+      - name: Install dependencies on base branch
+        run: go mod tidy
+
+      # Step 6: Generate baseline report from the base branch and save as artifact
+      - name: Generate Baseline Snyk Report
+        run: snyk test --package-manager=gomodules --severity-threshold=low --json > baseline-report.json || true
+
+      - name: Upload Baseline Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: baseline-report
+          path: baseline-report.json
+
+      # Step 7: Checkout the current PR branch and generate the current report
+      - name: Checkout current PR branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}  # Latest commit of the PR branch
+
+      - name: Install dependencies on PR branch
+        run: go mod tidy
+
+      - name: Download Baseline Report Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: baseline-report
+
+      - name: Generate Current Snyk Report
+        run: snyk test --package-manager=gomodules --severity-threshold=low --json > current-report.json || true
+
+      # Step 8: Compare baseline and current reports for new vulnerabilities
+      - name: Compare Snyk Reports for New Vulnerabilities
+        run: |
+          # Extract vulnerability IDs from baseline and current reports and sort them
+          baseline_ids=$(jq -r '.vulnerabilities[].id' baseline-report.json | sort | uniq)
+          current_ids=$(jq -r '.vulnerabilities[].id' current-report.json | sort | uniq)
+
+          # Find IDs present in current but not in baseline report
+          new_vulns=$(comm -13 <(echo "$baseline_ids") <(echo "$current_ids") | grep '^SNYK-')
+
+          if [ -n "$new_vulns" ]; then
+            echo "Your PR has introduced the following new vulnerabilities. Please ensure these vulnerabilities are fully addressed before the PR can be merged."
+            for vuln_id in $new_vulns; do
+              # Extract detailed information for each new vulnerability including CVE ID
+              jq --arg id "$vuln_id" '.vulnerabilities[] | select(.id == $id) | {
+                Title: .title,
+                ID: .id,
+                Severity: .severity,
+                CVSS_Score: .cvssScore,
+                Vulnerable_Versions: .semver.vulnerable,
+                Fixed_In: .fixedIn,
+                CVE_IDs: .identifiers.CVE,
+                Component_Name: .packageName,
+                Current_Version: .version,
+                References: (.references[] | {Title: .title, URL: .url}),
+                Introduced_Through: (.from | join(" > "))
+              }' current-report.json
+            done
+            exit 1  # Fail CI if new vulnerabilities are found
+          else
+            echo "No new vulnerabilities introduced in this PR."
+          fi

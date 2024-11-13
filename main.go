@@ -8,6 +8,7 @@ import (
 
 func main() {
 	fmt.Println("a12")
+
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
