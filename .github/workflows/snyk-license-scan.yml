@@ -70,16 +70,17 @@ jobs:
       - name: Run Snyk Security Test
         run: |
 #          # Extract vulnerability IDs from baseline and current reports and sort them
-#          baseline_ids=$(jq -r '.vulnerabilities[].id' baseline-report.json | sort | uniq)
-#          current_ids=$(jq -r '.vulnerabilities[].id' current-report.json | sort | uniq)
-#
-#          # Find IDs present in current but not in baseline report
-#          new_vulns=$(comm -13 <(echo "$baseline_ids") <(echo "$current_ids") | grep '^snyk:lic')
-#
-#          # Count the number of new vulnerabilities
-#          vuln_count=$(echo "$new_vulns" | wc -l)
-#
-#          # Store new vulnerability details for final output
+          echo "111111111111111111111"
+          baseline_ids=$(jq -r '.vulnerabilities[].id' baseline-report.json | sort | uniq)
+          current_ids=$(jq -r '.vulnerabilities[].id' current-report.json | sort | uniq)
+          echo "11111122222222222"
+          # Find IDs present in current but not in baseline report
+          new_vulns=$(comm -13 <(echo "$baseline_ids") <(echo "$current_ids") | grep '^snyk:lic')
+          echo "1111113333333333"
+          # Count the number of new vulnerabilities
+          vuln_count=$(echo "$new_vulns" | wc -l)
+
+          # Store new vulnerability details for final output
           vuln_details=""
 
 #          if [ -n "$new_vulns" ]; then
