@@ -86,7 +86,7 @@ jobs:
                 Vulnerable_Versions: .semver.vulnerable,
                 Fixed_In: .fixedIn,
                 CVE_IDs: .identifiers.CVE,
-                Component_Name: .package,
+                Component_Name: .packageName,
                 Current_Version: .version,
                 References: (.references[] | {Title: .title, URL: .url}),
                 Introduced_Through: (.from | join(" > "))
