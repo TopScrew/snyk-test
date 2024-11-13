@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/justinas/nosurf"
-	"net/http"
 )
 
 func main() {
@@ -14,6 +15,7 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
+
 	})
 	r.Run()
 }
