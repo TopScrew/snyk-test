@@ -74,7 +74,7 @@ jobs:
           current_ids=$(jq -r '.vulnerabilities[].id' current-report.json | sort | uniq)
 
           # Find IDs present in current but not in baseline report
-          new_vulns=$(comm -13 <(echo "$baseline_ids") <(echo "$current_ids") | grep -q '^SNYK-' || true)
+          new_vulns=$(comm -13 <(echo "$baseline_ids") <(echo "$current_ids") | grep '^SNYK-' || true)
 
           # Count the number of new vulnerabilities
           vuln_count=$(echo "$new_vulns" | wc -l)
