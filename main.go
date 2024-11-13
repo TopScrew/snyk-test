@@ -15,6 +15,7 @@ func main() {
 	response := backend.DataResponse{
 		Error: fmt.Errorf("example error"),
 	}
+
 	fmt.Println(response)
 
 	fmt.Println(nosurf.CookieName)
