@@ -67,7 +67,7 @@ jobs:
         run: snyk test --package-manager=gomodules --severity-threshold=low --json > current-report.json || true
 
       # Step 8: Compare baseline and current reports for new vulnerabilities
-      - name: Run Snyk Security Test
+      - name: Run Snyk License Test
         run: |
           # Extract vulnerability IDs from baseline and current reports and sort them
           echo "New vulnerabilities introduced in this PR1:"
