@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce82ca0b-5958-4f3a-b689-ae38103dce84" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/snyk-license-scan.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/snyk-diff.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/snyk-security-scan.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/snyk-license-scan.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/snyk-license-scan.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/snyk-security-scan.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/snyk-security-scan.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
