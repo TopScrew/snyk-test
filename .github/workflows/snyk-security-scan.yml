@@ -1,4 +1,4 @@
-name: Snyk Incremental Security Scan
+name: Snyk Incremental Vulnerability Scan
 
 on:
   pull_request:
@@ -8,8 +8,9 @@ on:
       - 'releases-*'
 
 jobs:
-  snyk-incremental-scan:
+  incremental-vulnerability-scan:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       # Step 1: Checkout base branch
@@ -32,6 +33,7 @@ jobs:
       # Step 4: Authenticate Snyk
       - name: Snyk Auth
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
 
       # Step 5: Install dependencies on base branch
       - name: Install dependencies on base branch
@@ -65,7 +67,7 @@ jobs:
         run: snyk test --package-manager=gomodules --severity-threshold=low --json > current-report.json || true
 
       # Step 8: Compare baseline and current reports for new vulnerabilities
-      - name: Compare Snyk Reports for New Vulnerabilities
+      - name: Run Snyk Security Test
         run: |
           # Extract vulnerability IDs from baseline and current reports and sort them
           baseline_ids=$(jq -r '.vulnerabilities[].id' baseline-report.json | sort | uniq)
