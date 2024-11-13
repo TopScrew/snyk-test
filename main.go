@@ -9,7 +9,6 @@ import (
 func main() {
 	
 	fmt.Println("a12")
-
 	
 
 	r := gin.Default()
