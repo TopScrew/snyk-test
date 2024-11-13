@@ -86,9 +86,10 @@ jobs:
                 Vulnerable_Versions: .semver.vulnerable,
                 Fixed_In: .fixedIn,
                 CVE_IDs: .identifiers.CVE,
-                Description: (.description | split("\n") | .[2] | gsub("## Overview"; "") | gsub("## Remediation"; "\nRemediation")),
+                Component_Name: .package,
+                Current_Version: .version,
                 References: (.references[] | {Title: .title, URL: .url}),
-                CWE_IDs: .identifiers.CWE
+                Introduced_Through: (.from | join(" > "))
               }' current-report.json
             done
             exit 1  # Fail CI if new vulnerabilities are found
