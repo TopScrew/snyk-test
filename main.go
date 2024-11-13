@@ -17,6 +17,7 @@ func main() {
 	response := backend.DataResponse{
 		Error: fmt.Errorf("example error"),
 	}
+	
 	fmt.Println("Example response:", response)
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
