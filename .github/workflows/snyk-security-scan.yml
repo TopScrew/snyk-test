@@ -112,6 +112,4 @@ jobs:
             echo -e "\033[0;31mList of New Vulnerabilities:\033[0m"
             echo -e "$vuln_details"
             exit 1  # Fail CI if new vulnerabilities are found
-          else
-            echo -e "\033[0;32mNo new vulnerabilities introduced in this PR.\033[0m"
           fi
