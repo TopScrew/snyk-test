@@ -76,7 +76,9 @@ jobs:
 
           echo "New vulnerabilities introduced in this PR2:"
           # Find IDs present in current but not in baseline report
-          new_vulns=$(comm -13 <(echo "$baseline_ids") <(echo "$current_ids") | grep '^snyk:lic')
+          new_vulns=$(comm -13 <(echo "$baseline_ids") <(echo "$current_ids") | grep '^snyk:lic' 2>&1) || {
+          echo "Error occurred during comm or grep command: $new_vulns"
+          }
 
           # Count the number of new vulnerabilities
           echo "New vulnerabilities introduced in this PR3:"
