@@ -1,6 +1,2 @@
-github.com/grafana/grafana-plugin-sdk-go v0.259.2 h1:UgjIuCwfVp2AkHqV+ZqAdOZc1G5avjtEDoaxWIEDVJY=
-github.com/grafana/grafana-plugin-sdk-go v0.259.2/go.mod h1:W0oyXqr67j7VuFqGRz6bwYnIVO/O0pscPNOzpa/oeUA=
 github.com/justinas/nosurf v1.0.0 h1:LVGyYeGcrHk59AZzyRnFTgxsiPCpRZyaTdd+vMp3ArE=
 github.com/justinas/nosurf v1.0.0/go.mod h1:Aucr5I5chr4OCuuVB4LTuHVrKHBuyRSo7vM2hqrcb7E=
-github.com/magefile/mage v1.15.0 h1:BvGheCMAsG3bWUDbZ8AyXXpCNwU9u5CB6sM+HNb9HYg=
-github.com/magefile/mage v1.15.0/go.mod h1:z5UZb/iS3GoOSn0JgWuiw7dxlurVYTu+/jHXqQg881A=
