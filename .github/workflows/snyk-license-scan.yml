@@ -69,51 +69,53 @@ jobs:
       # Step 8: Compare baseline and current reports for new vulnerabilities
       - name: Run Snyk Security Test
         run: |
-#          # Extract vulnerability IDs from baseline and current reports and sort them
-          echo "111111111111111111111"
+          # Extract vulnerability IDs from baseline and current reports and sort them
           baseline_ids=$(jq -r '.vulnerabilities[].id' baseline-report.json | sort | uniq)
           current_ids=$(jq -r '.vulnerabilities[].id' current-report.json | sort | uniq)
-          echo "11111122222222222"
+
           # Find IDs present in current but not in baseline report
           new_vulns=$(comm -13 <(echo "$baseline_ids") <(echo "$current_ids") | grep '^snyk:lic')
-          echo "1111113333333333"
+
           # Count the number of new vulnerabilities
           vuln_count=$(echo "$new_vulns" | wc -l)
 
           # Store new vulnerability details for final output
           vuln_details=""
 
-#          if [ -n "$new_vulns" ]; then
-#            # Collect details for each new vulnerability
-#            for vuln_id in $new_vulns; do
-#              # Extract detailed information for each new vulnerability including CVE ID
-#              vuln_info=$(jq --arg id "$vuln_id" '.vulnerabilities[] | select(.id == $id) | {
-#                id: .id,
-#                type: .type,
-#                license: .license,
-#                language: .language,
-#                description: .description,
-#                packageName: .packageName,
-#                creationTime: .creationTime,
-#                packageManager: .packageManager,
-#                publicationTime: .publicationTime,
-#                severity: .severity,
-#                from: .from,
-#                upgradePath: .upgradePath,
-#                version: .version,
-#                semver: .semver
-#              }' current-report.json)
-#
-#              # Add this vulnerability info to the details string
-#              vuln_details="$vuln_details\n$vuln_info"
-#            done
-#          fi
-#
-#          # Output results at the end
-#          if [ -n "$new_vulns" ]; then
-#            echo -e "\033[0;31mERROR: Your PR has introduced the following new vulnerabilities. Please ensure these vulnerabilities are fully addressed before the PR can be merged.\033[0m"
-#            echo -e "\033[0;33mTotal new vulnerabilities found: $vuln_count\033[0m"
-#            echo -e "\033[0;31mList of New Vulnerabilities:\033[0m"
-#            echo -e "$vuln_details"
-#            exit 1  # Fail CI if new vulnerabilities are found
-#          fi
+          if [ -n "$new_vulns" ]; then
+            # Collect details for each new vulnerability
+            for vuln_id in $new_vulns; do
+              # Extract detailed information for each new vulnerability including CVE ID
+              vuln_info=$(jq --arg id "$vuln_id" '.vulnerabilities[] | select(.id == $id) | {
+                id: .id,
+                type: .type,
+                license: .license,
+                language: .language,
+                description: .description,
+                packageName: .packageName,
+                creationTime: .creationTime,
+                packageManager: .packageManager,
+                publicationTime: .publicationTime,
+                severity: .severity,
+                from: .from,
+                upgradePath: .upgradePath,
+                version: .version,
+                semver: .semver
+              }' current-report.json)
+
+              # Add this vulnerability info to the details string
+              vuln_details="$vuln_details\n$vuln_info"
+            done
+          fi
+
+          # Output results at the end
+          if [ -n "$new_vulns" ]; then
+            echo -e "\033[0;31mERROR: Your PR has introduced the following new vulnerabilities. Please ensure these vulnerabilities are fully addressed before the PR can be merged.\033[0m"
+            echo -e "\033[0;33mTotal new vulnerabilities found: $vuln_count\033[0m"
+            echo -e "\033[0;31mList of New Vulnerabilities:\033[0m"
+            echo -e "$vuln_details"
+            exit 1  # Fail CI if new vulnerabilities are found
+          else
+            echo -e "\033[0;32mNo new vulnerabilities introduced in this PR.\033[0m"
+            exit 0  # Pass the CI if no new vulnerabilities are found
+          fi
